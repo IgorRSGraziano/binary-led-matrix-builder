@@ -5,6 +5,8 @@ type MatrixContextType = {
     columns: number;
     setRows: React.Dispatch<React.SetStateAction<number>>;
     setColumns: React.Dispatch<React.SetStateAction<number>>;
+    colBits: number[];
+    setColBits: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
 const MatrixContext = React.createContext<MatrixContextType | null>(null);
@@ -30,8 +32,14 @@ export function MatrixProvider({
     const [rows, setRows] = React.useState(propRows);
     const [columns, setColumns] = React.useState(propColumns);
 
+    const [colBits, setColBits] = React.useState<number[]>([]);
+
+    React.useEffect(() => {
+        setColBits(Array(columns).fill(0));
+    }, [columns]);
+
     return (
-        <MatrixContext.Provider value={{ rows, columns, setColumns, setRows }}>
+        <MatrixContext.Provider value={{ rows, columns, setColumns, setRows, colBits, setColBits }}>
             {children}
         </MatrixContext.Provider>
     );

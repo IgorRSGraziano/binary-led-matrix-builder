@@ -4,9 +4,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 function Header() {
-    const { rows, columns, setRows, setColumns } = useMatrixContext();
+    const { rows, columns, setRows, setColumns, colBits } = useMatrixContext();
     const [localRows, setLocalRows] = React.useState(rows);
     const [localColumns, setLocalColumns] = React.useState(columns);
+
+    const colBitsString = React.useMemo(() => {
+        const str = colBits.map(bits => bits.toString(2).padStart(rows, '0')).join(', ');
+        return `[${str}]`;
+    }, [colBits, rows]);
+
+    const colBitsStringHex = React.useMemo(() => {
+        const str = colBits.map(bits => '0x' + bits.toString(16).padStart(Math.ceil(rows / 4), '0')).join(', ');
+        return `[${str}]`;
+    }, [colBits, rows]);
+
 
     const handleUpdate = () => {
         setRows(localRows);
@@ -17,10 +28,22 @@ function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between gap-4">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1 className="text-xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         Vertical Binary
                     </h1>
-                    
+
+
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                            {colBitsString}
+                        </span>
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                            {colBitsStringHex}
+                        </span>
+                    </div>
+
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
                             <label htmlFor="columns" className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -52,7 +75,7 @@ function Header() {
                             />
                         </div>
 
-                        <Button 
+                        <Button
                             onClick={handleUpdate}
                             className="h-9"
                         >
